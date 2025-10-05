@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin-deployment
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin-pod
+  template:
+    metadata:
+      name: pgadmin-container
+      labels:
+        app: pgadmin-pod
+    spec:
+      containers:
+        - name: pgadmin-pod
+          image: elestio/pgadmin:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: jeral@gmail.com
+            - name: PGADMIN_DEFAULT_PASSWORD
+              value: '1234'

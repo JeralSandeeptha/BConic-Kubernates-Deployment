@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-service-deployment
+  namespace: production
+spec:
+  selector:
+    matchLabels:
+      app: frontend-pod
+  template:
+    metadata:
+      namespace: production
+      labels:
+        app: frontend-pod
+    spec:
+      containers:
+      - name: frontend-pod
+        image: jeralsandeeptha/bconic-frontend:a55cfaa8d4b9597f78a85bac2ab41ed8c7581f72
+        ports:
+          - containerPort: 80
+        env:
+          - name: REACT_APP_BACKEND_BASE_URL
+            value: http://backend-service.production.svc.cluster.local:5000/api/v1
+          - name: NODE_ENV
+            value: 'development'
+          - name: REACT_APP_MODE
+            value: 'production'

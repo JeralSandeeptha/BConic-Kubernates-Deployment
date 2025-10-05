@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-service-deployment
+  namespace: production
+spec:
+  selector:
+    matchLabels:
+      app: backend-pod
+  template:
+    metadata:
+      namespace: production
+      labels:
+        app: backend-pod
+    spec:
+      containers:
+      - name: backend-pod
+        image: jeralsandeeptha/bconic-backend:7b6909819a3a12ff4e6d6e53a07476807ae40f32
+        ports:
+          - containerPort: 5000
+        env:
+          - name: DATABASE_URL
+            value: postgresql://jeral:1234@postgres-service.production.svc.cluster.local:5432/bconic_db
+          - name: PORT
+            value: '5000'
+          - name: NODE_ENV
+            value: development
+          - name: JWT_SECRET
+            value: secret
+          - name: POSTGRES_USER
+            value: jeral
+          - name: POSTGRES_PASSWORD
+            value: '1234'
+          - name: POSTGRES_DB
+            value: bconic_db

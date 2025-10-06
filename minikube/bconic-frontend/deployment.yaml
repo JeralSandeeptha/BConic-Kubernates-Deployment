@@ -20,7 +20,7 @@ spec:
           - containerPort: 80
         env:
           - name: REACT_APP_BACKEND_BASE_URL
-            value: http://backend-service.production.svc.cluster.local:5000/api/v1
+            value: http://bconic.com/api/v1
           - name: NODE_ENV
             value: 'development'
           - name: REACT_APP_MODE

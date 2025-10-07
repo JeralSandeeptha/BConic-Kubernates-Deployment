@@ -27,6 +27,16 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
+      - name: Debug PAT token availability
+        run: |
+          echo "Checking PAT token availability..."
+          if [ -n "${{ secrets.PAT_TOKEN }}" ]; then
+            echo "✅ PAT_TOKEN secret is available"
+            echo "Token length: ${#{{ secrets.PAT_TOKEN }}} characters"
+          else
+            echo "❌ PAT_TOKEN secret is empty or not available"
+          fi
+
       # Update Image Tag
       - name: Update image tag in deployment
         run: |

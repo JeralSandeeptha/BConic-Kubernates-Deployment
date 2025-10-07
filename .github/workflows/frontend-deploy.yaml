@@ -24,24 +24,22 @@ jobs:
       # Checkout SCM
       - name: Checkout k8s manifests
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
 
       # Update Image Tag
       - name: Update image tag in deployment
         run: |
           echo "Updating frontend image to: jeralsandeeptha/bconic-frontend:${{ github.event.inputs.image_sha }}"
-          echo "Target file: minikube/bconic-frontend/deployment.yaml"
           
-          # Install yq if not present
-          if ! command -v yq &> /dev/null; then
-            sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-            sudo chmod a+x /usr/local/bin/yq
-          fi
+          # Install yq
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
           
           # Update the deployment file
           yq eval '.spec.template.spec.containers[0].image = "jeralsandeeptha/bconic-frontend:'${{ github.event.inputs.image_sha }}'"' -i minikube/bconic-frontend/deployment.yaml
           
-          echo "Updated deployment file:"
-          cat minikube/bconic-frontend/deployment.yaml
+          echo "✅ Updated deployment file"
 
       # Commit and Push changes
       - name: Commit updated deployment file
@@ -53,5 +51,5 @@ jobs:
           git remote set-url origin https://${{ secrets.PAT_TOKEN }}@github.com/JeralSandeeptha/BConic-Kubernates-Deployment.git
 
           git add minikube/bconic-frontend/deployment.yaml
-          git diff --staged --quiet || git commit -m "Deploy: Update frontend image to ${{ github.event.inputs.image_sha }}"
-          git push origin main
+          git commit -m "Deploy: Update frontend image to ${{ github.event.inputs.image_sha }}" || exit 0
+          git push
